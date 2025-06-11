@@ -1,70 +1,77 @@
 import json
 import sys
 import os
+import time
 
-def load_questions(filename: str):
-    """
-    Load quiz questions from a JSON file.
-    """
+def wczytaj_pytania(plik: str):
+ 
     try:
-        with open(filename, 'r', encoding='utf-8') as f:
+        with open(plik, 'r', encoding='utf-8') as f:
             return json.load(f)
     except (OSError, json.JSONDecodeError) as e:
-        print(f"Error loading questions: {e}")
+        input(f"Błąd podczas wczytywania pytań. Wciśnij Enter, by zakończyć. ({e})")
         sys.exit(1)
 
-def run_quiz(questions: list):
-    """
-    Run the quiz, clear console between interactions, validate input, tally score, and summarize answers.
-    """
-    score = 0
-    total = len(questions)
-    user_answers = []
+def uruchom_quiz(pytania: list):
+ 
+    wynik = 0
+    suma = len(pytania)
+    odpowiedzi_uzytkownika = []
+    start_czas = time.time()
 
-    for idx, q in enumerate(questions, start=1):
-        valid_keys = sorted(q['options'].keys())
-        # Input loop: clear, show question, validate
+    for numer, p in enumerate(pytania, start=1):
+        klucze_odpowiedzi = sorted(p['odpowiedzi'].keys())
+
+        # Pętla do poprawnego inputu
         while True:
             os.system('cls' if os.name == 'nt' else 'clear')
-            print(f"Question {idx}: {q['question']}")
-            for key in valid_keys:
-                print(f"  {key}) {q['options'][key]}")
+            print(f"Pytanie {numer}: {p['pytanie']}")
+            for klucz in klucze_odpowiedzi:
+                print(f"  {klucz}) {p['odpowiedzi'][klucz]}")
 
-            ans = input("Your answer (a/b/c/d): ").strip().lower()
-            if ans in valid_keys:
+            odp = input("Twoja odpowiedź (a/b/c/d): ").strip().lower()
+            if odp in klucze_odpowiedzi:
                 break
-            print("Invalid choice. Please enter a, b, c, or d.")
-            input("Press Enter to retry...")
+            print("Nieprawidłowy wybór. Wpisz a, b, c lub d.")
+            input("Naciśnij Enter, by spróbować ponownie...")
 
-        user_answers.append(ans)
-        correct_key = q['answer'].lower()
-        selected_text = q['options'][ans]
-        correct_text = q['options'][correct_key]
+        odpowiedzi_uzytkownika.append(odp)
+        poprawna = p['poprawna'].lower()
+        wybrany_tekst = p['odpowiedzi'][odp]
+        poprawny_tekst = p['odpowiedzi'][poprawna]
 
-        if ans == correct_key:
-            print(f"Correct! You answered '{ans}) {selected_text}'.\n")
-            score += 1
+        if odp == poprawna:
+            print(f"Poprawnie! Wybrałeś '{odp}) {wybrany_tekst}'.\n")
+            wynik += 1
         else:
             print(
-                f"Wrong. You answered '{ans}) {selected_text}'. "
-                f"The correct answer was '{correct_key}) {correct_text}'.\n"
+                f"Źle. Wybrałeś '{odp}) {wybrany_tekst}'. "
+                f"Poprawna odpowiedź to '{poprawna}) {poprawny_tekst}'.\n"
             )
 
-        input("Press Enter to continue...")
+        input("Naciśnij Enter, by kontynuować...")
 
-    # Final summary
+    koniec_czas = time.time()
+    czas_trwania = round(koniec_czas - start_czas, 2)
     os.system('cls' if os.name == 'nt' else 'clear')
-    print(f"You scored {score} out of {total}.\n")
-    print("Summary of your answers:")
-    for idx, q in enumerate(questions, start=1):
-        your = user_answers[idx - 1]
-        your_text = q['options'][your]
-        correct_key = q['answer'].lower()
-        correct_text = q['options'][correct_key]
-        print(f"{idx}. {q['question']}")
-        print(f"   Your answer: {your}) {your_text}")
-        print(f"   Correct answer: {correct_key}) {correct_text}\n")
+    print(f"Twój wynik: {wynik}/{suma}")
+    print(f"Czas trwania quizu: {czas_trwania} sekund.\n")
+    print("📋 Podsumowanie twoich odpowiedzi:\n")
+
+    for idx, p in enumerate(pytania, start=1):
+        dane = odpowiedzi_uzytkownika[idx - 1]
+        dane_tekst = p['odpowiedzi'][dane]
+        poprawna = p['poprawna'].lower()
+        poprawna_tekst = p['odpowiedzi'][poprawna]
+
+        print(f"{idx}. {p['pytanie']}")
+        print(f"   Twoja odpowiedź: {dane}) {dane_tekst}")
+        print(f"   Poprawna odpowiedź: {poprawna}) {poprawna_tekst}\n")
 
 if __name__ == '__main__':
-    questions = load_questions('questions.json')
-    run_quiz(questions)
+    pytania = wczytaj_pytania('questions.json')
+    try:
+        uruchom_quiz(pytania)
+    except KeyboardInterrupt:
+        print("\nPrzerwano działanie programu.")
+        sys.exit(0)
