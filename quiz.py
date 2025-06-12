@@ -22,7 +22,6 @@ def uruchom_quiz(pytania: list):
     for numer, p in enumerate(pytania, start=1):
         klucze_odpowiedzi = sorted(p['odpowiedzi'].keys())
 
-        # Pętla do poprawnego inputu
         while True:
             os.system('cls' if os.name == 'nt' else 'clear')
             print(f"Pytanie {numer}: {p['pytanie']}")
