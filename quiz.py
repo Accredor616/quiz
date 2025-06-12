@@ -1,11 +1,11 @@
-import json
-import sys
-import os
-import time
+import json #do wczytania pliku z pytaniami
+import sys #do zakończenia
+import os #czyszczenie konsoli
+import time #liczenie czasu
 
-def menu_startowe():
+def menu_startowe(): #wyświetla menu główne i pyta o wybór
     while True:
-        os.system('cls' if os.name == 'nt' else 'clear')
+        os.system('cls' if os.name == 'nt' else 'clear') #czyści konsolę
         print("="*40)
         print("   WITAJ W QUIZIE Z 'MISTRZA I MAŁGORZATY'")
         print("="*40)
@@ -19,7 +19,7 @@ def menu_startowe():
         print("Nieprawidłowy wybór. Wpisz 1 lub 2.")
         input("Naciśnij Enter, by spróbować ponownie...")
 
-def wczytaj_pytania(plik: str):
+def wczytaj_pytania(plik: str): #wczytuje pytania
  
     try:
         with open(plik, 'r', encoding='utf-8') as f:
@@ -28,15 +28,14 @@ def wczytaj_pytania(plik: str):
         input(f"Błąd podczas wczytywania pytań. Wciśnij Enter, by zakończyć. ({e})")
         sys.exit(1)
 
-def uruchom_quiz(pytania: list):
+def uruchom_quiz(pytania: list): #kontroluje przebieg quizu
  
-    wynik = 0
-    suma = len(pytania)
+    wynik = 0 #podaje wynik
+    suma = len(pytania) #całkowita liczba pytań, dzięki temu można 2 pliku json zmieniać/dodawać/usuwać pytania i będzie git
     odpowiedzi_uzytkownika = []
-    start_czas = time.time()
+    start_czas = time.time() #zaczyna liczyć czas
 
     print("\nRozpoczynasz quiz... Powodzenia!\n")
-    czas_start = time.time()
 
     for numer, p in enumerate(pytania, start=1):
         klucze_odpowiedzi = sorted(p['odpowiedzi'].keys())
@@ -69,7 +68,7 @@ def uruchom_quiz(pytania: list):
 
         input("Naciśnij Enter, by kontynuować...")
 
-    koniec_czas = time.time()
+    koniec_czas = time.time() #kończy liczyć czas
     czas_trwania = round(koniec_czas - start_czas, 2)
     os.system('cls' if os.name == 'nt' else 'clear')
     print("Podsumowanie twoich odpowiedzi:\n")
@@ -83,13 +82,13 @@ def uruchom_quiz(pytania: list):
         print(f"{idx}. {p['pytanie']}")
         print(f"   Twoja odpowiedź: {dane}) {dane_tekst}")
         print(f"   Poprawna odpowiedź: {poprawna}) {poprawna_tekst}\n")
-    
+    #wynik i czas
     print("="*40)
     print(f"Twój wynik: {wynik}/{suma}")
     print(f"Czas trwania quizu: {czas_trwania} sekund.\n")
     print("="*40)
 
-if __name__ == '__main__':
+if __name__ == '__main__': #uruchomienie programu
     try:
         while True:
             wybor = menu_startowe()
