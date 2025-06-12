@@ -84,10 +84,10 @@ def uruchom_quiz(pytania: list):
         print(f"   Twoja odpowiedź: {dane}) {dane_tekst}")
         print(f"   Poprawna odpowiedź: {poprawna}) {poprawna_tekst}\n")
     
-        print("="*40)
-        print(f"Twój wynik: {wynik}/{suma}")
-        print(f"Czas trwania quizu: {czas_trwania} sekund.\n")
-        print("="*40)
+    print("="*40)
+    print(f"Twój wynik: {wynik}/{suma}")
+    print(f"Czas trwania quizu: {czas_trwania} sekund.\n")
+    print("="*40)
 
 if __name__ == '__main__':
     try:
